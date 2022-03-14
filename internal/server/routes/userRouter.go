@@ -2,11 +2,11 @@ package routes
 
 import (
 	"encoding/json"
-	"mascotas_users/pkg/Domain/response"
-	"mascotas_users/pkg/Domain/user"
-	"mascotas_users/pkg/Use_cases/Handlers/userHandler"
-	"mascotas_users/pkg/Use_cases/Helpers/responseHelper"
 	"net/http"
+	"tinder_users/pkg/Domain/response"
+	"tinder_users/pkg/Domain/user"
+	"tinder_users/pkg/Use_cases/Handlers/userHandler"
+	"tinder_users/pkg/Use_cases/Helpers/responseHelper"
 
 	"github.com/go-chi/chi"
 )

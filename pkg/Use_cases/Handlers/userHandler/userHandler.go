@@ -1,11 +1,11 @@
 package userHandler
 
 import (
-	"mascotas_users/internal/data/Infrastructure/userRepository"
-	"mascotas_users/internal/encoder"
-	"mascotas_users/pkg/Domain/response"
-	"mascotas_users/pkg/Domain/user"
 	"net/mail"
+	"tinder_users/internal/data/Infrastructure/userRepository"
+	"tinder_users/internal/encoder"
+	"tinder_users/pkg/Domain/response"
+	"tinder_users/pkg/Domain/user"
 
 	"github.com/gofrs/uuid"
 )

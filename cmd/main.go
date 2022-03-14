@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"mascotas_users/internal/server"
 	"os"
+	"tinder_users/internal/server"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"

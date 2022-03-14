@@ -2,9 +2,9 @@ package server
 
 import (
 	"log"
-	"mascotas_users/internal/server/routes"
 	"net/http"
 	"time"
+	"tinder_users/internal/server/routes"
 
 	"github.com/go-chi/chi"
 )
@@ -20,7 +20,7 @@ func New(port string) (*Server, error) {
 	r := chi.NewRouter()
 
 	//Se monta como raiz la direccion "api"
-	r.Mount("/api/mascotas-users", routes.New())
+	r.Mount("/api/tinder", routes.New())
 
 	serv := &http.Server{
 		Addr:         ":" + port,

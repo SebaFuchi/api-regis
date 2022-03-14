@@ -1,9 +1,9 @@
 package userRepository
 
 import (
-	"mascotas_users/pkg/Domain/response"
-	"mascotas_users/pkg/Domain/user"
-	"mascotas_users/pkg/Use_cases/Helpers/dbHelper"
+	"tinder_users/pkg/Domain/response"
+	"tinder_users/pkg/Domain/user"
+	"tinder_users/pkg/Use_cases/Helpers/dbHelper"
 )
 
 type Repository interface {

@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"mascotas_users/internal/data/Infrastructure/userRepository"
-	"mascotas_users/pkg/Use_cases/Handlers/userHandler"
+	"tinder_users/internal/data/Infrastructure/userRepository"
+	"tinder_users/pkg/Use_cases/Handlers/userHandler"
 
 	"net/http"
 
