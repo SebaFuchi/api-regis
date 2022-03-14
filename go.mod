@@ -1,4 +1,4 @@
-module mascotas_users
+module tinder_users
 
 go 1.16
 
