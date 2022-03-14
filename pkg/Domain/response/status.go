@@ -8,24 +8,19 @@ const (
 	DBExecutionError
 	DBRowsError
 	DBLastRowIdError
-
-	RequestError
-	RequestDoError
-	ReadRequestError
+	DBScanError
 
 	EmailAlreadyExists
-	NickNameAlreadyExists
 	UserNotFound
 	UserDontExist
 
 	SuccesfulCreation
+	SuccesfulLogin
 	UserFound
 	CreationFailure
 
-	InvalidPermissions
 	InvalidEmailFormat
 	IncorrectPassword
-	OriginNotAllowed
 	RequestTimeOut
 	BadRequest
 	Unknown
@@ -38,24 +33,19 @@ func (s Status) String() string {
 		"DBExecutionError",
 		"DBRowsError",
 		"DBLastRowIdError",
-
-		"RequestError",
-		"RequestDoError",
-		"ReadRequestError",
+		"DBScanError",
 
 		"EmailAlreadyExists",
-		"NickNameAlreadyExists",
 		"UserNotFound",
 		"UserDontExist",
 
 		"SuccesfulCreation",
+		"SuccesfulLogin",
 		"UserFound",
 		"CreationFailure",
 
-		"InvalidPermissions",
 		"InvalidEmailFormat",
 		"IncorrectPassword",
-		"OriginNotAllowed",
 		"RequestTimeOut",
 		"BadRequest",
 		"Unknown",

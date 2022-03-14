@@ -2,7 +2,7 @@ package responseHelper
 
 import (
 	"encoding/json"
-	"hermes_users/pkg/Domain/response"
+	"mascotas_users/pkg/Domain/response"
 )
 
 func ResponseBuilder(status int, message string, data interface{}) ([]byte, error) {

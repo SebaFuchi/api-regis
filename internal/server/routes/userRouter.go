@@ -2,12 +2,10 @@ package routes
 
 import (
 	"encoding/json"
-	"hermes_users/pkg/Domain/response"
-	"hermes_users/pkg/Domain/user"
-	"hermes_users/pkg/Use_cases/Handlers/userHandler"
-	"hermes_users/pkg/Use_cases/Helpers/logger"
-	permitshelper "hermes_users/pkg/Use_cases/Helpers/permitsHelper"
-	"hermes_users/pkg/Use_cases/Helpers/responseHelper"
+	"mascotas_users/pkg/Domain/response"
+	"mascotas_users/pkg/Domain/user"
+	"mascotas_users/pkg/Use_cases/Handlers/userHandler"
+	"mascotas_users/pkg/Use_cases/Helpers/responseHelper"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -33,8 +31,8 @@ func (ur *UserRouter) RegisUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	registeredUser, status := ur.Handler.RegisUser(u, from)
-	resp, err := responseHelper.ResponseBuilder(status.Index(), status.String(), registeredUser)
+	status := ur.Handler.RegisUser(u)
+	resp, err := responseHelper.ResponseBuilder(status.Index(), status.String(), nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("500: Internal server error"))
@@ -49,15 +47,11 @@ func (ur *UserRouter) RegisUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(resp))
 		return
-	case response.InvalidEmailFormat:
-		w.WriteHeader(http.StatusNotAcceptable)
-		w.Write([]byte(resp))
-		return
-	case response.EmailAlreadyExists, response.NickNameAlreadyExists:
+	case response.EmailAlreadyExists:
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(resp))
 		return
-	case response.InternalServerError, response.RequestError, response.RequestDoError, response.ReadRequestError, response.DBQueryError, response.DBExecutionError, response.CreationFailure, response.DBLastRowIdError:
+	case response.InternalServerError, response.DBQueryError, response.DBExecutionError, response.CreationFailure, response.DBLastRowIdError:
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(resp))
 		return
@@ -76,13 +70,10 @@ func (ur *UserRouter) RegisUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
-	from := chi.URLParam(r, "from")
 	var lr user.LoginRequest
 
 	err := json.NewDecoder(r.Body).Decode(&lr)
 	if err != nil {
-		message := "path: /hermes-user/api/users. Se intenta loguear en hermes, Bad request"
-		logger.Log(message, "400")
 		resp, err := responseHelper.ResponseBuilder(response.BadRequest.Index(), response.BadRequest.String(), nil)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -92,22 +83,9 @@ func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
 		return
 	}
-
-	permit := permitshelper.GetPermit(from)
-	if permit == permitshelper.Unknown.Index() {
-		resp, err := responseHelper.ResponseBuilder(response.OriginNotAllowed.Index(), response.OriginNotAllowed.String(), nil)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("500: Internal server error"))
-			return
-		}
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte(resp))
-		return
-	}
 	defer r.Body.Close()
 
-	userParsed, status := ur.Handler.Login(lr, from)
+	userParsed, status := ur.Handler.Login(lr)
 	var resp []byte
 	resp, err = responseHelper.ResponseBuilder(status.Index(), status.String(), userParsed)
 	if err != nil {
@@ -116,21 +94,15 @@ func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch status {
-	// There is no user with that data to login
-	case response.UserDontExist:
+	case response.UserNotFound:
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(resp))
 		return
-	// the password does not match the one found in the token
 	case response.IncorrectPassword:
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(resp))
 		return
-	case response.InvalidPermissions:
-		w.WriteHeader(http.StatusNotAcceptable)
-		w.Write([]byte(resp))
-		return
-	case response.UserFound:
+	case response.SuccesfulLogin:
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(resp))
 		return
@@ -138,8 +110,6 @@ func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusRequestTimeout)
 		w.Write([]byte(resp))
 	default:
-		message := "path: /hermes-user/api/users. Se intenta loguear en hermes, ERROR INESPERADO."
-		logger.Log(message, "500")
 		resp, err := responseHelper.ResponseBuilder(response.InternalServerError.Index(), response.InternalServerError.String(), nil)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -155,9 +125,8 @@ func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
 func (ur *UserRouter) Routes() http.Handler {
 	r := chi.NewRouter()
 
-	//r.Post("/login", ur.Login)
-	r.Post("/register/{from}", ur.RegisUser)
-	r.Post("/login/{from}", ur.Login)
+	r.Post("/register", ur.RegisUser)
+	r.Post("/login", ur.Login)
 
 	return r
 }
