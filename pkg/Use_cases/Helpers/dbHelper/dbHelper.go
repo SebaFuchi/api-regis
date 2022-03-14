@@ -8,7 +8,7 @@ import (
 )
 
 func GetDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", os.Getenv("DB_PATH"))
+	db, err := sql.Open("mysql", os.Getenv("DB"))
 
 	if err != nil {
 		return nil, err

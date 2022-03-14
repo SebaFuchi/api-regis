@@ -3,12 +3,8 @@ package user
 type User struct {
 	Id             int    `json:"id"`
 	Token          string `json:"token"`
-	HashedPassword string
-	Sex            string `json:"sex"`
+	HashedPassword string `json:"hashedPassword,omitempty"`
 	Name           string `json:"name"`
-	NameTag        string `json:"nameTag"`
-	RegisDate      string `json:"regisDate"`
+	LastName       string `json:"lastName"`
 	Email          string `json:"email"`
-	PhoneNumber    string `json:"phoneNumber"`
-	Image          string `json:"image"`
 }
