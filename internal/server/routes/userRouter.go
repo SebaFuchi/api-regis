@@ -70,7 +70,7 @@ func (ur *UserRouter) RegisUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
-	var lr user.LoginRequest
+	var lr user.RegisterUser
 
 	err := json.NewDecoder(r.Body).Decode(&lr)
 	if err != nil {

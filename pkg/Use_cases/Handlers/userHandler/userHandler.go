@@ -1,6 +1,9 @@
 package userHandler
 
 import (
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"net/mail"
 	"tinder_users/internal/data/Infrastructure/userRepository"
 	"tinder_users/internal/encoder"
@@ -16,7 +19,7 @@ type UserHandler struct {
 
 type Handler interface {
 	RegisUser(regisUser user.RegisterUser) response.Status
-	Login(loginUser user.LoginRequest) (interface{}, response.Status)
+	Login(loginUser user.RegisterUser) (interface{}, response.Status)
 }
 
 func (ur *UserHandler) RegisUser(regisUser user.RegisterUser) response.Status {
@@ -51,7 +54,7 @@ func (ur *UserHandler) RegisUser(regisUser user.RegisterUser) response.Status {
 	return response.SuccesfulCreation
 }
 
-func (uh *UserHandler) Login(loginUser user.LoginRequest) (interface{}, response.Status) {
+func (uh *UserHandler) Login(loginUser user.RegisterUser) (interface{}, response.Status) {
 	userFound, status := uh.Repository.FindUserByEmail(loginUser.Email)
 	if status != response.UserFound {
 		return nil, status
@@ -59,7 +62,32 @@ func (uh *UserHandler) Login(loginUser user.LoginRequest) (interface{}, response
 
 	if encoder.ComparePasswords(userFound.HashedPassword, []byte(loginUser.Password)) {
 		userFound.HashedPassword = ""
+
+		resp, err := http.Get("http://localhost:3000/api/tinder/pets/owner/" + userFound.Token)
+
+		if err != nil {
+			fmt.Println(err)
+			return nil, response.InternalServerError
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == 200 {
+
+			var parseResp response.Response
+			err = json.NewDecoder(resp.Body).Decode(&parseResp)
+			if err != nil {
+				return nil, response.InternalServerError
+			}
+
+			jsonString, _ := json.Marshal(parseResp.Data)
+			err = json.Unmarshal(jsonString, &userFound.Pets)
+			if err != nil {
+				return nil, response.InternalServerError
+			}
+		}
+
 		return userFound, response.SuccesfulLogin
 	}
+
 	return nil, response.IncorrectPassword
 }
