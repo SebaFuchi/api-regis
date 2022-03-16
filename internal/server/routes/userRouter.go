@@ -106,9 +106,10 @@ func (ur *UserRouter) Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(resp))
 		return
-	case response.RequestTimeOut:
-		w.WriteHeader(http.StatusRequestTimeout)
+	case response.InternalServerError, response.DBExecutionError, response.DBQueryError, response.DBScanError:
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(resp))
+		return
 	default:
 		resp, err := responseHelper.ResponseBuilder(response.InternalServerError.Index(), response.InternalServerError.String(), nil)
 		if err != nil {
