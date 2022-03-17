@@ -63,7 +63,7 @@ func (uh *UserHandler) Login(loginUser user.RegisterUser) (interface{}, response
 	if encoder.ComparePasswords(userFound.HashedPassword, []byte(loginUser.Password)) {
 		userFound.HashedPassword = ""
 
-		resp, err := http.Get("http://localhost:3000/api/tinder/pets/owner/" + userFound.Token)
+		resp, err := http.Get("http://localhost:8081/api/tinder/pets/owner/" + userFound.Token)
 
 		if err != nil {
 			fmt.Println(err)
