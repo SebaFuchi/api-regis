@@ -48,7 +48,7 @@ func (ur *UserRouter) RegisUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
 		return
 	case response.EmailAlreadyExists:
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusConflict)
 		w.Write([]byte(resp))
 		return
 	case response.InternalServerError, response.DBQueryError, response.DBExecutionError, response.CreationFailure, response.DBLastRowIdError:
